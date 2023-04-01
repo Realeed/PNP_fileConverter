@@ -28,10 +28,10 @@ def getExcel():
         convertFile(fullPaths[index])
 
     if len(excels)  > 1:
-        with ZipFile(dir + 'formatted_excels.zip', 'w') as zipObj:
+        with ZipFile(dir + 'Formatted_excels.zip', 'w') as zipObj:
             for index, filename in enumerate(filenames):
-                zipObj.write(fullPaths[index], arcname = filename + '_(formatted)' + extensions[index])
-        return send_file(dir + 'formatted_excels.zip')
+                zipObj.write(fullPaths[index], arcname = filename + extensions[index])
+        return send_file(dir + 'Formatted_excels.zip')
     return send_file(fullPaths[0], as_attachment=True)
 
 if __name__  == "__main__":

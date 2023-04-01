@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Format Excel for Power Automate</title>
+        <title>PnP Formatter</title>
         <style>
             body {
                 margin: 50px;
+                margin-top: 0;
+            }
+            #infotxt {
+                font-size: 50px;
+                font-weight: 100;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                color: rgb(105, 105, 105);
+                user-select: none;
             }
             #inpLabel {
                 font-family: Arial, Helvetica, sans-serif;
@@ -20,9 +28,12 @@
         </style>
     </head>
     <body>
-        <form action="upload_excel" method="POST" enctype="multipart/form-data">
-            <label for="excelInp" id="inpLabel">Upload the Excel file(s):</label>
-            <input type="file" name="excelInp" id="excelInp" onchange="this.form.submit()" multiple>
-        </form>
+        <div>
+            <p id="infotxt">Pick and Place File Formatter</p>
+            <form action="upload_excel" method="POST" enctype="multipart/form-data">
+                <label for="excelInp" id="inpLabel">Upload the Excel file(s):</label>
+                <input type="file" name="excelInp" id="excelInp" onchange="this.form.submit()" multiple>
+            </form>
+        </div>
     </body>
 </html>

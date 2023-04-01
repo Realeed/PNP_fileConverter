@@ -1,3 +1,3 @@
-from pnp import convertFile
+from converter import convertFile
 
-convertFile('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for USB_TypeA_TypeC_Charger_RevB_Panel (2).csv')
+convertFile('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for Thin_Task_Lamp_S_RevC_Panel.csv')

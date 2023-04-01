@@ -12,19 +12,19 @@ def getColumn(sheet, cellName):
         if cellName in column:
             return index
 
-fidX = []
-fidY = []
-fidQty = 0
-
-designators = []
-comments = []
-footprints = []
-compX = []
-compY = []
-rotations = []
-compQty = 0
-
 def convertFile(path):
+    fidX = []
+    fidY = []
+    fidQty = 0
+
+    designators = []
+    comments = []
+    footprints = []
+    compX = []
+    compY = []
+    rotations = []
+    compQty = 0
+    print(designators)
     with open(path, 'r') as csv_file:
         sheet = list(csv.reader(csv_file))
         maxRow = len(sheet)

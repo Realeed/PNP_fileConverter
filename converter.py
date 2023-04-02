@@ -29,6 +29,11 @@ def convertSingle10(path):
     topFidQty = 0
     bottomFidQty = 0
 
+    topFidCrctOrdX = []
+    topFidCrctOrdY = []
+    bottomFidCrctOrdX = []
+    bottomFidCrctOrdY = []
+
     topDesignators = []
     bottomDesignators = []
     topComments = []
@@ -117,6 +122,9 @@ def convertSingle10(path):
         return 0
     
     if topCompQty > 0:
+        topFidX.sort(reverse=True)
+        print(topFidX)
+
         for i in range (1, len(topDesignators)):
             if topDesignators[i] == topDesignators[0]:
                 topSingleCompQty = i

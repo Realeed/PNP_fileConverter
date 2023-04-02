@@ -137,8 +137,8 @@ def convertSingle10(path):
             if topSingleFirstCompY[i] == min(topSingleFirstCompY):
                 topSingleFirstCompYMinIndices.append(i)       
 
-        rows = len(topSingleFirstCompYMinIndices)
-        cols = len(topSingleFirstCompXMinIndices)
+        rows = len(topSingleFirstCompXMinIndices)
+        cols = len(topSingleFirstCompYMinIndices)
 
         topSingleFirstLowestIndex = 0
 
@@ -162,9 +162,6 @@ def convertSingle10(path):
             topSingleCompY.append(topCompY[i])
             topSingleRotations.append(topRotations[i])
         
-        print(topSingleDesignators)
-        print(topSingleCompX)
-        print(topSingleCompY)
 
     if bottomCompQty > 0:  
         for i in range (1, len(bottomDesignators)):
@@ -209,11 +206,7 @@ def convertSingle10(path):
             bottomSingleCompX.append(bottomCompX[i])
             bottomSingleCompY.append(bottomCompY[i])
             bottomSingleRotations.append(bottomRotations[i])
-        
-        print(bottomSingleDesignators)
-        print(bottomSingleCompX)
-        print(bottomSingleCompY)
-  
+
     
     if topCompQty > 0:
         with open(dir + fileName + '_Top_N10' + fileExt, 'w', newline='', encoding='utf-8') as out_file:
@@ -323,4 +316,4 @@ def convertSingle10(path):
                 out_file.writerow(['Comp', '', bottomSingleComments[i], bottomSingleFootprints[i], bottomSingleDesignators[i], '', 
                                 bottomSingleCompX[i], bottomSingleCompY[i], bottomSingleRotations[i], 'NO', 'Align'])
 
-convertSingle10('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for Thin_Task_Lamp_Driver_RevF_Panel.csv')
+convertSingle10('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for Dual_TypeC_Charger_RevK_Panel.csv')

@@ -44,6 +44,12 @@ def convertSingle10(path):
     topCompQty = 0
     bottomCompQty = 0
 
+    topSingleCompQty = 0
+    bottomSingleCompQty = 0
+
+    rows = 0
+    cols = 0
+
     with open(path, 'r') as csv_file:
         sheet = list(csv.reader(csv_file))
         maxRow = len(sheet)
@@ -86,11 +92,66 @@ def convertSingle10(path):
                     bottomCompY.append(round(float(sheet[row][yCol]), float_precision))
                     bottomRotations.append(180 - round(float(sheet[row][rotaionCol]), float_precision))
 
-        topCompQty = len(topCompX)
-        bottomCompQty = len(bottomCompX)
+    topCompQty = len(topCompX)
+    bottomCompQty = len(bottomCompX)
+
+    topSingleFirstCompX = []
+    topSingleFirstCompY = []
+
+    bottomSingleFirstCompX = []
+    bottomSingleFirstCompY = []
 
     if topCompQty == 0 and bottomCompQty == 0:
         return 0
+    
+    if topCompQty > 0:
+        for i in range (1, len(topDesignators)):
+            if topDesignators[i] == topDesignators[0]:
+                topSingleCompQty = i
+                break
+
+        for i in range (0, topCompQty, topSingleCompQty):
+            topSingleFirstCompX.append(topCompX[i])
+            topSingleFirstCompY.append(topCompY[i])
+        
+        topSingleFirstCompXMinIndices = []
+        topSingleFirstCompYMinIndices = []
+
+        for i in range (len(topSingleFirstCompX)):
+            if topSingleFirstCompX[i] == min(topSingleFirstCompX):
+                topSingleFirstCompXMinIndices.append(i)
+
+        for i in range (len(topSingleFirstCompY)):
+            if topSingleFirstCompY[i] == min(topSingleFirstCompY):
+                topSingleFirstCompYMinIndices.append(i)       
+
+        rows = len(topSingleFirstCompYMinIndices)
+        cols = len(topSingleFirstCompXMinIndices)
+
+        topSingleFirstLowestCompIndex = 0
+
+        for i in range (len(topSingleFirstCompXMinIndices)):
+            if topSingleFirstCompXMinIndices[i] in topSingleFirstCompYMinIndices:
+                topSingleFirstLowestCompIndex = topSingleFirstCompXMinIndices[i]
+                break
+
+        print(rows)
+        print(cols)
+        print(topSingleFirstCompXMinIndices)
+        print(topSingleFirstCompYMinIndices)
+        print(topSingleFirstLowestCompIndex)
+
+    if bottomCompQty > 0:  
+        for i in range (1, len(bottomDesignators)):
+            if bottomDesignators[i] == bottomDesignators[0]:
+                bottomSingleCompQty = i
+                break
+
+
+        for i in range (0, bottomCompQty, bottomSingleCompQty):
+            bottomSingleFirstCompX.append(bottomCompX[i])
+            bottomSingleFirstCompY.append(bottomCompY[i])
+  
     
     if topCompQty > 0:
         with open(dir + fileName + '_Top_N10' + fileExt, 'w', newline='', encoding='utf-8') as out_file:
@@ -113,7 +174,7 @@ def convertSingle10(path):
                             'Feed PCB', 'Panelized Mark Point', 'PCB Width', 'PCB Length',
                             'Safe height', 'Manual Mark', 'Test', 'Detect X', 'Detect Y',
                             'Long PCB Input'])
-            out_file.writerow(['PCB', '', '', '', '', '', '', '', '', '0', '0', '', '1', '0', 
+            out_file.writerow(['PCB', cols, rows, '', '', '', '', '', '', '0', '0', '', '1', '0', 
                             '0', '', 'NO', '1', '', '', '', '4', '', '', '', '', ''])
             out_file.writerow([])
 
@@ -200,4 +261,4 @@ def convertSingle10(path):
                 out_file.writerow(['Comp', '', bottomComments[i], bottomFootprints[i], bottomDesignators[i], '', 
                                 bottomCompX[i], bottomCompY[i], bottomRotations[i], 'NO', 'Align'])
 
-convertSingle10('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for Thin_Task_Lamp_Driver_RevF_Panel.csv')
+convertSingle10('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for Metropolis_RevE_Panel(2700K).csv')

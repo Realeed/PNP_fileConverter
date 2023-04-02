@@ -163,6 +163,8 @@ def convertSingle10(path):
             topSingleRotations.append(topRotations[i])
         
         print(topSingleDesignators)
+        print(topSingleCompX)
+        print(topSingleCompY)
 
     if bottomCompQty > 0:  
         for i in range (1, len(bottomDesignators)):
@@ -199,6 +201,18 @@ def convertSingle10(path):
             if bottomCompX[i] == bottomSingleFirstCompX[bottomSingleFirstLowestIndex] and bottomCompY[i] == bottomSingleFirstCompY[bottomSingleFirstLowestIndex]:
                 bottomPanelFirstLowestIndex = i
                 break
+
+        for i in range(bottomPanelFirstLowestIndex, bottomPanelFirstLowestIndex + bottomSingleCompQty):
+            bottomSingleDesignators.append(bottomDesignators[i])
+            bottomSingleComments.append(bottomComments[i])
+            bottomSingleFootprints.append(bottomFootprints[i])
+            bottomSingleCompX.append(bottomCompX[i])
+            bottomSingleCompY.append(bottomCompY[i])
+            bottomSingleRotations.append(bottomRotations[i])
+        
+        print(bottomSingleDesignators)
+        print(bottomSingleCompX)
+        print(bottomSingleCompY)
   
     
     if topCompQty > 0:
@@ -251,9 +265,9 @@ def convertSingle10(path):
 
             out_file.writerow(['#Comp', 'Feeder ID', 'Comment', 'Footprint', 'Designator',
                             'Nozzle', 'Pos X', 'Pos Y', 'Angle', 'Skip', 'Position'])
-            for i in range(topCompQty):
-                out_file.writerow(['Comp', '', topComments[i], topFootprints[i], topDesignators[i], '', 
-                                topCompX[i], topCompY[i], topRotations[i], 'NO', 'Align'])
+            for i in range(topSingleCompQty):
+                out_file.writerow(['Comp', '', topSingleComments[i], topSingleFootprints[i], topSingleDesignators[i], '', 
+                                topSingleCompX[i], topSingleCompY[i], topSingleRotations[i], 'NO', 'Align'])
     
     if bottomCompQty > 0:
         with open(dir + fileName + '_Bottom_N10' + fileExt, 'w', newline='', encoding='utf-8') as out_file:
@@ -305,8 +319,8 @@ def convertSingle10(path):
 
             out_file.writerow(['#Comp', 'Feeder ID', 'Comment', 'Footprint', 'Designator',
                             'Nozzle', 'Pos X', 'Pos Y', 'Angle', 'Skip', 'Position'])
-            for i in range(bottomCompQty):
-                out_file.writerow(['Comp', '', bottomComments[i], bottomFootprints[i], bottomDesignators[i], '', 
-                                bottomCompX[i], bottomCompY[i], bottomRotations[i], 'NO', 'Align'])
+            for i in range(bottomSingleCompQty):
+                out_file.writerow(['Comp', '', bottomSingleComments[i], bottomSingleFootprints[i], bottomSingleDesignators[i], '', 
+                                bottomSingleCompX[i], bottomSingleCompY[i], bottomSingleRotations[i], 'NO', 'Align'])
 
 convertSingle10('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for Thin_Task_Lamp_Driver_RevF_Panel.csv')

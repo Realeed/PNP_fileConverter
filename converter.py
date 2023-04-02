@@ -24,7 +24,7 @@ def convertFile(path):
     compY = []
     rotations = []
     compQty = 0
-    print(designators)
+
     with open(path, 'r') as csv_file:
         sheet = list(csv.reader(csv_file))
         maxRow = len(sheet)
@@ -43,13 +43,6 @@ def convertFile(path):
                 fidY.append(round(float(sheet[row][footprintCol+2]), float_precision))
 
         fidQty = len(fidX)
-
-        designators = []
-        comments = []
-        footprints = []
-        compX = []
-        compY = []
-        rotations = []
 
         for row in range(headerRow + fidQty + 1, maxRow):
             designators.append(sheet[row][designatorCol])

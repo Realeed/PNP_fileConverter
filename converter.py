@@ -1,4 +1,6 @@
 import csv
+from pathlib import Path
+import os
 
 float_precision = 3
 
@@ -13,17 +15,34 @@ def getColumn(sheet, cellName):
             return index
 
 def convertSingle10(path):
-    fidX = []
-    fidY = []
-    fidQty = 0
+    dir = 'resources\\'
+    if not os.path.exists(dir):
+        os.mkdir(dir)
 
-    designators = []
-    comments = []
-    footprints = []
+    fileName = Path(path).stem.replace('Pick Place for ', '').replace('Panel', 'Single')
+    fileExt = Path(path).suffix
+
+    topFidX = []
+    topFidY = []
+    bottomFidX = []
+    bottomFidY = []
+    topFidQty = 0
+    bottomFidQty = 0
+
+    topDesignators = []
+    bottomDesignators = []
+    topComments = []
+    bottomComments = []
+    topFootprints = []
+    bottomFootprints = []
     topCompX = []
     topCompY = []
-    rotations = []
-    compQty = 0
+    bottomCompX = []
+    bottomCompY = []
+    topRotations = []
+    bottomRotations = []
+    topCompQty = 0
+    bottomCompQty = 0
 
     with open(path, 'r') as csv_file:
         sheet = list(csv.reader(csv_file))
@@ -37,26 +56,43 @@ def convertSingle10(path):
         yCol = getColumn(sheet, 'Center-Y(mm)')
         rotaionCol = getColumn(sheet, 'Rotation')
         layerCol = getColumn(sheet, 'Layer')
-        print(layerCol)
 
         for row in range(headerRow + 1, maxRow):
             if sheet[row][footprintCol] == 'Global_Fiducial' or sheet[row][footprintCol] == 'Global_Fiducial_-_SQ':
-                fidX.append(round(float(sheet[row][footprintCol+1]), float_precision))
-                fidY.append(round(float(sheet[row][footprintCol+2]), float_precision))
+                if sheet[row][layerCol] == 'TopLayer':
+                    topFidX.append(round(float(sheet[row][footprintCol+1]), float_precision))
+                    topFidY.append(round(float(sheet[row][footprintCol+2]), float_precision))
+                elif sheet[row][layerCol] == 'BottomLayer':
+                    bottomFidX.append(round(float(sheet[row][footprintCol+1]), float_precision))
+                    bottomFidY.append(round(float(sheet[row][footprintCol+2]), float_precision))
 
-        fidQty = len(fidX)
+        topFidQty = len(topFidX)
+        bottomFidQty = len(bottomFidX)
 
-        for row in range(headerRow + fidQty + 1, maxRow):
-            designators.append(sheet[row][designatorCol])
-            comments.append(sheet[row][commentCol])
-            footprints.append(sheet[row][footprintCol])
-        #     compX.append(round(float(sheet[row][xCol]), float_precision))
-        #     compY.append(round(float(sheet[row][yCol]), float_precision))
-        #     rotations.append(sheet[row][rotaionCol])
+        for row in range(headerRow + 1, maxRow):
+            if sheet[row][footprintCol] != 'Global_Fiducial' and sheet[row][footprintCol] != 'Global_Fiducial_-_SQ':
+                if sheet[row][layerCol] == 'TopLayer':
+                    topDesignators.append(sheet[row][designatorCol])
+                    topComments.append(sheet[row][commentCol])
+                    topFootprints.append(sheet[row][footprintCol])
+                    topCompX.append(round(float(sheet[row][xCol]), float_precision))
+                    topCompY.append(round(float(sheet[row][yCol]), float_precision))
+                    topRotations.append(sheet[row][rotaionCol])
+                elif sheet[row][layerCol] == 'BottomLayer':
+                    bottomDesignators.append(sheet[row][designatorCol])
+                    bottomComments.append(sheet[row][commentCol])
+                    bottomFootprints.append(sheet[row][footprintCol])
+                    bottomCompX.append(round(float(sheet[row][xCol]), float_precision))
+                    bottomCompY.append(round(float(sheet[row][yCol]), float_precision))
+                    bottomRotations.append(sheet[row][rotaionCol])
 
-        # compQty = len(compX)
+        topCompQty = len(topCompX)
+        bottomCompQty = len(bottomCompX)
 
-    with open(f'{path}', 'w', newline='', encoding='utf-8') as out_file:
+    if topCompQty == 0 and bottomCompQty == 0:
+        return 0
+    
+    with open(dir + fileName + '_Top_N10' + fileExt, 'w', newline='', encoding='utf-8') as out_file:
         out_file = csv.writer(out_file)
         out_file.writerow(['#Feeder', 'Feeder ID', 'Skip', 'Pos X', 'Pos Y', 'Angle', 
                         'Footprint', 'Comment', 'Nozzle', 'Pick Height', 'Pick delay', 
@@ -98,15 +134,15 @@ def convertSingle10(path):
         out_file.writerow(['#Mark', 'Pos X', 'Pos Y', 'Min Size', 'Max Size', 'Flash',
                         'Brightness', 'Searching Area', 'Circular Similarity',
                         'Nested Mode', 'Select Camera', 'Position'])
-        for i in range(fidQty):
-            out_file.writerow(['Mark', fidX[i], fidY[i], '0.8', '1.2', 'Inner', '20', '4', '80',
+        for i in range(topFidQty):
+            out_file.writerow(['Mark', topFidX[i], topFidY[i], '0.8', '1.2', 'Inner', '20', '4', '80',
                         'Black Spot', 'Left Camera'])
         out_file.writerow([])
 
         out_file.writerow(['#Comp', 'Feeder ID', 'Comment', 'Footprint', 'Designator',
                         'Nozzle', 'Pos X', 'Pos Y', 'Angle', 'Skip', 'Position'])
-        # for i in range(compQty):
-        #     out_file.writerow(['Comp', '', comments[i], footprints[i], designators[i], '', 
-        #                     compX[i], compY[i], rotations[i], 'NO', 'Align'])
+        for i in range(topCompQty):
+            out_file.writerow(['Comp', '', topComments[i], topFootprints[i], topDesignators[i], '', 
+                            topCompX[i], topCompY[i], topRotations[i], 'NO', 'Align'])
 
 convertSingle10('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for Thin_Task_Lamp_Driver_RevF_Panel.csv')

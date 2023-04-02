@@ -60,11 +60,11 @@ def convertSingle10(path):
         for row in range(headerRow + 1, maxRow):
             if sheet[row][footprintCol] == 'Global_Fiducial' or sheet[row][footprintCol] == 'Global_Fiducial_-_SQ':
                 if sheet[row][layerCol] == 'TopLayer':
-                    topFidX.append(round(float(sheet[row][footprintCol+1]), float_precision))
-                    topFidY.append(round(float(sheet[row][footprintCol+2]), float_precision))
+                    topFidX.append(round(float(sheet[row][xCol]), float_precision))
+                    topFidY.append(round(float(sheet[row][yCol]), float_precision))
                 elif sheet[row][layerCol] == 'BottomLayer':
-                    bottomFidX.append(round(float(sheet[row][footprintCol+1]), float_precision))
-                    bottomFidY.append(round(float(sheet[row][footprintCol+2]), float_precision))
+                    bottomFidX.append(-1 * round(float(sheet[row][xCol]), float_precision))
+                    bottomFidY.append(round(float(sheet[row][yCol]), float_precision))
 
         topFidQty = len(topFidX)
         bottomFidQty = len(bottomFidX)
@@ -82,9 +82,9 @@ def convertSingle10(path):
                     bottomDesignators.append(sheet[row][designatorCol])
                     bottomComments.append(sheet[row][commentCol])
                     bottomFootprints.append(sheet[row][footprintCol])
-                    bottomCompX.append(round(float(sheet[row][xCol]), float_precision))
+                    bottomCompX.append(-1 * round(float(sheet[row][xCol]), float_precision))
                     bottomCompY.append(round(float(sheet[row][yCol]), float_precision))
-                    bottomRotations.append(sheet[row][rotaionCol])
+                    bottomRotations.append(180 - round(float(sheet[row][rotaionCol]), float_precision))
 
         topCompQty = len(topCompX)
         bottomCompQty = len(bottomCompX)
@@ -92,57 +92,112 @@ def convertSingle10(path):
     if topCompQty == 0 and bottomCompQty == 0:
         return 0
     
-    with open(dir + fileName + '_Top_N10' + fileExt, 'w', newline='', encoding='utf-8') as out_file:
-        out_file = csv.writer(out_file)
-        out_file.writerow(['#Feeder', 'Feeder ID', 'Skip', 'Pos X', 'Pos Y', 'Angle', 
-                        'Footprint', 'Comment', 'Nozzle', 'Pick Height', 'Pick delay', 
-                        'Move Speed', 'Place Height', 'Place delay', 'Place Speed', 
-                        'Accuracy', 'Width', 'Length', 'Thickness', 'Size Analyze', 
-                        'Tray X', 'Tray Y', 'Columns', 'Rows', 'Right Top X', 'Right Top Y', 
-                        'Vision Model', 'Brightness', 'Vision Error', 'Vision Flash',
-                        'Feeder Type', 'NoisyPoint', 'Try times', 'Feed wait time', 
-                        'Find Out Rectangle'])
-        out_file.writerow([])
+    if topCompQty > 0:
+        with open(dir + fileName + '_Top_N10' + fileExt, 'w', newline='', encoding='utf-8') as out_file:
+            out_file = csv.writer(out_file)
+            out_file.writerow(['#Feeder', 'Feeder ID', 'Skip', 'Pos X', 'Pos Y', 'Angle', 
+                            'Footprint', 'Comment', 'Nozzle', 'Pick Height', 'Pick delay', 
+                            'Move Speed', 'Place Height', 'Place delay', 'Place Speed', 
+                            'Accuracy', 'Width', 'Length', 'Thickness', 'Size Analyze', 
+                            'Tray X', 'Tray Y', 'Columns', 'Rows', 'Right Top X', 'Right Top Y', 
+                            'Vision Model', 'Brightness', 'Vision Error', 'Vision Flash',
+                            'Feeder Type', 'NoisyPoint', 'Try times', 'Feed wait time', 
+                            'Find Out Rectangle'])
+            out_file.writerow([])
 
-        out_file.writerow(['#PCB', 'Columns', 'Rows', 'Left Bottom X', 'Left Bottom Y', 
-                        'Left Top X', 'Left Top Y', 'Right Top X', 'Right Top Y', 
-                        'Mirror Board Left Bottom X', 'Mirror Board Left Bottom Y',
-                        'Panelize Board Angle', 'Mirror Board', 'Marked Panel X',
-                        'Marked Panel Y', 'Marked Panel Value', 'Manual Program',
-                        'Feed PCB', 'Panelized Mark Point', 'PCB Width', 'PCB Length',
-                        'Safe height', 'Manual Mark', 'Test', 'Detect X', 'Detect Y',
-                        'Long PCB Input'])
-        out_file.writerow(['PCB', '', '', '', '', '', '', '', '', '0', '0', '', '1', '0', 
-                        '0', '', 'NO', '1', '', '', '', '4', '', '', '', '', ''])
-        out_file.writerow([])
+            out_file.writerow(['#PCB', 'Columns', 'Rows', 'Left Bottom X', 'Left Bottom Y', 
+                            'Left Top X', 'Left Top Y', 'Right Top X', 'Right Top Y', 
+                            'Mirror Board Left Bottom X', 'Mirror Board Left Bottom Y',
+                            'Panelize Board Angle', 'Mirror Board', 'Marked Panel X',
+                            'Marked Panel Y', 'Marked Panel Value', 'Manual Program',
+                            'Feed PCB', 'Panelized Mark Point', 'PCB Width', 'PCB Length',
+                            'Safe height', 'Manual Mark', 'Test', 'Detect X', 'Detect Y',
+                            'Long PCB Input'])
+            out_file.writerow(['PCB', '', '', '', '', '', '', '', '', '0', '0', '', '1', '0', 
+                            '0', '', 'NO', '1', '', '', '', '4', '', '', '', '', ''])
+            out_file.writerow([])
 
-        out_file.writerow(['#Panel', 'Pos X', 'Pos Y', 'Offset X', 'Offset Y', 'Angle',
-                        'Skip', 'Position'])
-        out_file.writerow([])
+            out_file.writerow(['#Panel', 'Pos X', 'Pos Y', 'Offset X', 'Offset Y', 'Angle',
+                            'Skip', 'Position'])
+            out_file.writerow([])
 
-        out_file.writerow(['#Nozzle', 'NozzleID', 'Nozzle Type', 'Disabled'])
-        out_file.writerow(['Nozzle', '1', '', 'NO'])
-        out_file.writerow(['Nozzle', '2', '', 'NO'])
-        out_file.writerow(['Nozzle', '3', '', 'NO'])
-        out_file.writerow(['Nozzle', '4', '', 'NO'])
-        out_file.writerow(['Nozzle', '5', '', 'NO'])
-        out_file.writerow(['Nozzle', '6', '', 'NO'])
-        out_file.writerow(['Nozzle', '7', '', 'NO'])
-        out_file.writerow(['Nozzle', '8', '', 'NO'])
-        out_file.writerow([])
+            out_file.writerow(['#Nozzle', 'NozzleID', 'Nozzle Type', 'Disabled'])
+            out_file.writerow(['Nozzle', '1', '', 'NO'])
+            out_file.writerow(['Nozzle', '2', '', 'NO'])
+            out_file.writerow(['Nozzle', '3', '', 'NO'])
+            out_file.writerow(['Nozzle', '4', '', 'NO'])
+            out_file.writerow(['Nozzle', '5', '', 'NO'])
+            out_file.writerow(['Nozzle', '6', '', 'NO'])
+            out_file.writerow(['Nozzle', '7', '', 'NO'])
+            out_file.writerow(['Nozzle', '8', '', 'NO'])
+            out_file.writerow([])
 
-        out_file.writerow(['#Mark', 'Pos X', 'Pos Y', 'Min Size', 'Max Size', 'Flash',
-                        'Brightness', 'Searching Area', 'Circular Similarity',
-                        'Nested Mode', 'Select Camera', 'Position'])
-        for i in range(topFidQty):
-            out_file.writerow(['Mark', topFidX[i], topFidY[i], '0.8', '1.2', 'Inner', '20', '4', '80',
-                        'Black Spot', 'Left Camera'])
-        out_file.writerow([])
+            out_file.writerow(['#Mark', 'Pos X', 'Pos Y', 'Min Size', 'Max Size', 'Flash',
+                            'Brightness', 'Searching Area', 'Circular Similarity',
+                            'Nested Mode', 'Select Camera', 'Position'])
+            for i in range(topFidQty):
+                out_file.writerow(['Mark', topFidX[i], topFidY[i], '0.8', '1.2', 'Inner', '20', '4', '80',
+                            'Black Spot', 'Left Camera'])
+            out_file.writerow([])
 
-        out_file.writerow(['#Comp', 'Feeder ID', 'Comment', 'Footprint', 'Designator',
-                        'Nozzle', 'Pos X', 'Pos Y', 'Angle', 'Skip', 'Position'])
-        for i in range(topCompQty):
-            out_file.writerow(['Comp', '', topComments[i], topFootprints[i], topDesignators[i], '', 
-                            topCompX[i], topCompY[i], topRotations[i], 'NO', 'Align'])
+            out_file.writerow(['#Comp', 'Feeder ID', 'Comment', 'Footprint', 'Designator',
+                            'Nozzle', 'Pos X', 'Pos Y', 'Angle', 'Skip', 'Position'])
+            for i in range(topCompQty):
+                out_file.writerow(['Comp', '', topComments[i], topFootprints[i], topDesignators[i], '', 
+                                topCompX[i], topCompY[i], topRotations[i], 'NO', 'Align'])
+    
+    if bottomCompQty > 0:
+        with open(dir + fileName + '_Bottom_N10' + fileExt, 'w', newline='', encoding='utf-8') as out_file:
+            out_file = csv.writer(out_file)
+            out_file.writerow(['#Feeder', 'Feeder ID', 'Skip', 'Pos X', 'Pos Y', 'Angle', 
+                            'Footprint', 'Comment', 'Nozzle', 'Pick Height', 'Pick delay', 
+                            'Move Speed', 'Place Height', 'Place delay', 'Place Speed', 
+                            'Accuracy', 'Width', 'Length', 'Thickness', 'Size Analyze', 
+                            'Tray X', 'Tray Y', 'Columns', 'Rows', 'Right Top X', 'Right Top Y', 
+                            'Vision Model', 'Brightness', 'Vision Error', 'Vision Flash',
+                            'Feeder Type', 'NoisyPoint', 'Try times', 'Feed wait time', 
+                            'Find Out Rectangle'])
+            out_file.writerow([])
+
+            out_file.writerow(['#PCB', 'Columns', 'Rows', 'Left Bottom X', 'Left Bottom Y', 
+                            'Left Top X', 'Left Top Y', 'Right Top X', 'Right Top Y', 
+                            'Mirror Board Left Bottom X', 'Mirror Board Left Bottom Y',
+                            'Panelize Board Angle', 'Mirror Board', 'Marked Panel X',
+                            'Marked Panel Y', 'Marked Panel Value', 'Manual Program',
+                            'Feed PCB', 'Panelized Mark Point', 'PCB Width', 'PCB Length',
+                            'Safe height', 'Manual Mark', 'Test', 'Detect X', 'Detect Y',
+                            'Long PCB Input'])
+            out_file.writerow(['PCB', '', '', '', '', '', '', '', '', '0', '0', '', '1', '0', 
+                            '0', '', 'NO', '1', '', '', '', '4', '', '', '', '', ''])
+            out_file.writerow([])
+
+            out_file.writerow(['#Panel', 'Pos X', 'Pos Y', 'Offset X', 'Offset Y', 'Angle',
+                            'Skip', 'Position'])
+            out_file.writerow([])
+
+            out_file.writerow(['#Nozzle', 'NozzleID', 'Nozzle Type', 'Disabled'])
+            out_file.writerow(['Nozzle', '1', '', 'NO'])
+            out_file.writerow(['Nozzle', '2', '', 'NO'])
+            out_file.writerow(['Nozzle', '3', '', 'NO'])
+            out_file.writerow(['Nozzle', '4', '', 'NO'])
+            out_file.writerow(['Nozzle', '5', '', 'NO'])
+            out_file.writerow(['Nozzle', '6', '', 'NO'])
+            out_file.writerow(['Nozzle', '7', '', 'NO'])
+            out_file.writerow(['Nozzle', '8', '', 'NO'])
+            out_file.writerow([])
+
+            out_file.writerow(['#Mark', 'Pos X', 'Pos Y', 'Min Size', 'Max Size', 'Flash',
+                            'Brightness', 'Searching Area', 'Circular Similarity',
+                            'Nested Mode', 'Select Camera', 'Position'])
+            for i in range(bottomFidQty):
+                out_file.writerow(['Mark', bottomFidX[i], bottomFidY[i], '0.8', '1.2', 'Inner', '20', '4', '80',
+                            'Black Spot', 'Left Camera'])
+            out_file.writerow([])
+
+            out_file.writerow(['#Comp', 'Feeder ID', 'Comment', 'Footprint', 'Designator',
+                            'Nozzle', 'Pos X', 'Pos Y', 'Angle', 'Skip', 'Position'])
+            for i in range(bottomCompQty):
+                out_file.writerow(['Comp', '', bottomComments[i], bottomFootprints[i], bottomDesignators[i], '', 
+                                bottomCompX[i], bottomCompY[i], bottomRotations[i], 'NO', 'Align'])
 
 convertSingle10('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for Thin_Task_Lamp_Driver_RevF_Panel.csv')

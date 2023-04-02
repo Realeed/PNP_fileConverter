@@ -29,11 +29,6 @@ def convertSingle10(path):
     topFidQty = 0
     bottomFidQty = 0
 
-    topFidCrctOrdX = []
-    topFidCrctOrdY = []
-    bottomFidCrctOrdX = []
-    bottomFidCrctOrdY = []
-
     topDesignators = []
     bottomDesignators = []
     topComments = []
@@ -122,8 +117,16 @@ def convertSingle10(path):
         return 0
     
     if topCompQty > 0:
-        topFidX.sort(reverse=True)
-        print(topFidX)
+        for i in range(len(topFidX)):
+            for j in range(len(topFidX)):
+                if topFidX[j] < topFidX[i]:
+                    numX = topFidX[i]
+                    topFidX[i] = topFidX[j]
+                    topFidX[j] = numX
+
+                    numY = topFidY[i]
+                    topFidY[i] = topFidY[j]
+                    topFidY[j] = numY
 
         for i in range (1, len(topDesignators)):
             if topDesignators[i] == topDesignators[0]:
@@ -171,7 +174,18 @@ def convertSingle10(path):
             topSingleRotations.append(topRotations[i])
         
 
-    if bottomCompQty > 0:  
+    if bottomCompQty > 0:
+        for i in range(len(bottomFidX)):
+            for j in range(len(bottomFidX)):
+                if bottomFidX[j] < bottomFidX[i]:
+                    numX = bottomFidX[i]
+                    bottomFidX[i] = bottomFidX[j]
+                    bottomFidX[j] = numX
+
+                    numY = bottomFidY[i]
+                    bottomFidY[i] = bottomFidY[j]
+                    bottomFidY[j] = numY
+
         for i in range (1, len(bottomDesignators)):
             if bottomDesignators[i] == bottomDesignators[0]:
                 bottomSingleCompQty = i

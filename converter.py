@@ -12,7 +12,7 @@ def getColumn(sheet, cellName):
         if cellName in column:
             return index
 
-def convertFile(path):
+def convertSingle10(path):
     fidX = []
     fidY = []
     fidQty = 0
@@ -20,8 +20,8 @@ def convertFile(path):
     designators = []
     comments = []
     footprints = []
-    compX = []
-    compY = []
+    topCompX = []
+    topCompY = []
     rotations = []
     compQty = 0
 
@@ -36,6 +36,8 @@ def convertFile(path):
         xCol = getColumn(sheet, 'Center-X(mm)')
         yCol = getColumn(sheet, 'Center-Y(mm)')
         rotaionCol = getColumn(sheet, 'Rotation')
+        layerCol = getColumn(sheet, 'Layer')
+        print(layerCol)
 
         for row in range(headerRow + 1, maxRow):
             if sheet[row][footprintCol] == 'Global_Fiducial' or sheet[row][footprintCol] == 'Global_Fiducial_-_SQ':
@@ -48,11 +50,11 @@ def convertFile(path):
             designators.append(sheet[row][designatorCol])
             comments.append(sheet[row][commentCol])
             footprints.append(sheet[row][footprintCol])
-            compX.append(round(float(sheet[row][xCol]), float_precision))
-            compY.append(round(float(sheet[row][yCol]), float_precision))
-            rotations.append(sheet[row][rotaionCol])
+        #     compX.append(round(float(sheet[row][xCol]), float_precision))
+        #     compY.append(round(float(sheet[row][yCol]), float_precision))
+        #     rotations.append(sheet[row][rotaionCol])
 
-        compQty = len(compX)
+        # compQty = len(compX)
 
     with open(f'{path}', 'w', newline='', encoding='utf-8') as out_file:
         out_file = csv.writer(out_file)
@@ -103,6 +105,8 @@ def convertFile(path):
 
         out_file.writerow(['#Comp', 'Feeder ID', 'Comment', 'Footprint', 'Designator',
                         'Nozzle', 'Pos X', 'Pos Y', 'Angle', 'Skip', 'Position'])
-        for i in range(compQty):
-            out_file.writerow(['Comp', '', comments[i], footprints[i], designators[i], '', 
-                            compX[i], compY[i], rotations[i], 'NO', 'Align'])
+        # for i in range(compQty):
+        #     out_file.writerow(['Comp', '', comments[i], footprints[i], designators[i], '', 
+        #                     compX[i], compY[i], rotations[i], 'NO', 'Align'])
+
+convertSingle10('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for Thin_Task_Lamp_Driver_RevF_Panel.csv')

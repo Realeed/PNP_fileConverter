@@ -19,6 +19,8 @@ def getExcel():
     fullPaths = []
     filenames = []
     extensions = []
+    fileType = request.form.get('filetype')
+    print(fileType)
     excels = request.files.getlist('excelInp')
     for index, excel in enumerate(excels):
         fullPaths.append(dir + excel.filename)
@@ -27,7 +29,7 @@ def getExcel():
         excel.save(fullPaths[index])
         convertFile(fullPaths[index])
 
-    if len(excels)  > 1:
+    if len(excels) > 1:
         with ZipFile(dir + 'Formatted_excels.zip', 'w') as zipObj:
             for index, filename in enumerate(filenames):
                 zipObj.write(fullPaths[index], arcname = filename + extensions[index])

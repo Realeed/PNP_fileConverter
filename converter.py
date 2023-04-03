@@ -113,7 +113,7 @@ def convertSingle10(path):
     bottomSingleFirstCompX = []
     bottomSingleFirstCompY = []
 
-    if topCompQty == 0 and bottomCompQty == 0:
+    if (topCompQty == 0 and bottomCompQty == 0) or (topCompQty == 0 and bottomCompQty > 0):
         return 0
     
     if topCompQty > 0:
@@ -338,4 +338,7 @@ def convertSingle10(path):
                 out_file.writerow(['Comp', '', bottomSingleComments[i], bottomSingleFootprints[i], bottomSingleDesignators[i], '', 
                                 bottomSingleCompX[i], bottomSingleCompY[i], bottomSingleRotations[i], 'NO', 'Align'])
 
-convertSingle10('C:\\Users\\hsarg\\Downloads\\attachments\\Pick Place for Dual_TypeC_Charger_RevK_Panel.csv')
+    if topCompQty > 0 and bottomCompQty > 0:
+        return 2
+    elif topCompQty > 0 and bottomCompQty == 0:
+        return 1

@@ -111,6 +111,15 @@ def appendSingleFirstCompXY(compQty, singleCompQty, compX, compY, singleFirstCom
             singleFirstCompX.append(compX[i])
             singleFirstCompY.append(compY[i])
 
+def appendMinIndices(singleFirstCompX, singleFirstCompY, singleFirstCompXMinIndices, singleFirstCompYMinIndices):
+    for i in range (len(singleFirstCompX)):
+        if singleFirstCompX[i] == min(singleFirstCompX):
+            singleFirstCompXMinIndices.append(i)
+
+    for i in range (len(singleFirstCompY)):
+        if singleFirstCompY[i] == min(singleFirstCompY):
+            singleFirstCompYMinIndices.append(i)
+
 def convertSingle10(path):
     dir = makeDir('resources')
 
@@ -182,13 +191,7 @@ def convertSingle10(path):
     topSingleFirstCompXMinIndices = []
     topSingleFirstCompYMinIndices = []
 
-    for i in range (len(topSingleFirstCompX)):
-        if topSingleFirstCompX[i] == min(topSingleFirstCompX):
-            topSingleFirstCompXMinIndices.append(i)
-
-    for i in range (len(topSingleFirstCompY)):
-        if topSingleFirstCompY[i] == min(topSingleFirstCompY):
-            topSingleFirstCompYMinIndices.append(i)       
+    appendMinIndices(topSingleFirstCompX, topSingleFirstCompY, topSingleFirstCompXMinIndices, topSingleFirstCompYMinIndices)    
 
     rows = len(topSingleFirstCompXMinIndices)
     cols = len(topSingleFirstCompYMinIndices)

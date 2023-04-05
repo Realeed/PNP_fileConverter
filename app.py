@@ -35,4 +35,4 @@ def getExcel():
             return send_file(dir + filename.replace('Pick Place for ', '').replace('Panel', 'Single') + '_Top_N10' + extension)
 
 if __name__  == "__main__":
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=80, debug=True)

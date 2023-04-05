@@ -32,11 +32,10 @@ def getFileExtension(path):
     fileExt = Path(path).suffix
     return fileExt
 
-def getExcelData(path, topFidX, topFidY, bottomFidX, bottomFidY, topFidQty, bottomFidQty,
+def getExcelData(path, topFidX, topFidY, bottomFidX, bottomFidY,
                 topDesignators, bottomDesignators, topComments, bottomComments,
                 topFootprints, bottomFootprints, topCompX, topCompY, 
-                bottomCompX, bottomCompY, topRotations, bottomRotations,
-                topCompQty, bottomCompQty):
+                bottomCompX, bottomCompY, topRotations, bottomRotations):
     
     with open(path, 'r') as csv_file:
         sheet = list(csv.reader(csv_file))
@@ -82,6 +81,8 @@ def getExcelData(path, topFidX, topFidY, bottomFidX, bottomFidY, topFidQty, bott
 
     topCompQty = len(topCompX)
     bottomCompQty = len(bottomCompX)
+
+    return topFidQty, bottomFidQty, topCompQty, bottomCompQty
 
 def checkGetDataFailed(topCompQty):
     if topCompQty == 0:
@@ -162,12 +163,10 @@ def convertSingle10(path):
     bottomSingleFirstCompX = []
     bottomSingleFirstCompY = []
 
-    getExcelData(path, topFidX, topFidY, bottomFidX, bottomFidY, topFidQty, bottomFidQty,
-                topDesignators, bottomDesignators, topComments, bottomComments,
-                topFootprints, bottomFootprints, topCompX, topCompY, 
-                bottomCompX, bottomCompY, topRotations, bottomRotations,
-                topCompQty, bottomCompQty)
-
+    topFidQty, bottomFidQty, topCompQty, bottomCompQty = getExcelData(path, topFidX, 
+                    topFidY, bottomFidX, bottomFidY, topDesignators, bottomDesignators, 
+                    topComments, bottomComments,topFootprints, bottomFootprints, topCompX, topCompY, 
+                    bottomCompX, bottomCompY, topRotations, bottomRotations)
 
     if checkGetDataFailed(topCompQty):
         return 0

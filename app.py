@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, send_file
-import os
 from pathlib import Path
 from zipfile import ZipFile
-from converter import convertSingle10
+from converter import convertSingle10, convertPanel10
 
 app = Flask(__name__)
 app.secret_key = "secret"
@@ -26,13 +25,24 @@ def getExcel():
         layers = convertSingle10(fullPath)
         if layers == 2:
             with ZipFile(dir + filename + '.zip', 'w') as zipObj:
-                zipObj.write(dir + filename.replace('Pick Place for ', '').replace('Panel', 'Single') + '_Top_N10' + extension, 
-                            arcname = filename.replace('Pick Place for ', '').replace('Panel', 'Single') + '_Top_N10' + extension)
-                zipObj.write(dir + filename.replace('Pick Place for ', '').replace('Panel', 'Single') + '_Bottom_N10' + extension, 
-                            arcname = filename.replace('Pick Place for ', '').replace('Panel', 'Single') + '_Bottom_N10' + extension)
+                zipObj.write(dir + filename.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single') + '_Top_N10' + extension, 
+                            arcname = filename.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single') + '_Top_N10' + extension)
+                zipObj.write(dir + filename.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single') + '_Bottom_N10' + extension, 
+                            arcname = filename.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single') + '_Bottom_N10' + extension)
             return send_file(dir + filename + '.zip')
         elif layers == 1:
-            return send_file(dir + filename.replace('Pick Place for ', '').replace('Panel', 'Single') + '_Top_N10' + extension)
+            return send_file(dir + filename.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single') + '_Top_N10' + extension)
+    elif fileType == 'panel10':
+        layers = convertPanel10(fullPath)
+        if layers == 2:
+            with ZipFile(dir + filename + '.zip', 'w') as zipObj:
+                zipObj.write(dir + filename.replace('Pick Place for ', '').replace('_N10', '') + '_Top_N10' + extension, 
+                            arcname = filename.replace('Pick Place for ', '').replace('_N10', '') + '_Top_N10' + extension)
+                zipObj.write(dir + filename.replace('Pick Place for ', '').replace('_N10', '') + '_Bottom_N10' + extension, 
+                            arcname = filename.replace('Pick Place for ', '').replace('_N10', '') + '_Bottom_N10' + extension)
+            return send_file(dir + filename + '.zip')
+        elif layers == 1:
+            return send_file(dir + filename.replace('Pick Place for ', '').replace('_N10', '') + '_Top_N10' + extension)
 
 if __name__  == "__main__":
     app.run(host='0.0.0.0', port=80, debug=True)

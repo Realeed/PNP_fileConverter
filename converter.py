@@ -22,10 +22,10 @@ def makeDir(folderName):
 
 def changeFileName(path, single):
     if single:
-       fileName = Path(path).stem.replace('Pick Place for ', '').replace('Panel', 'Single')
-       return fileName
+        fileName = Path(path).stem.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single')
+        return fileName
     else:
-        fileName = Path(path).stem.replace('Pick Place for ', '')
+        fileName = Path(path).stem.replace('Pick Place for ', '').replace('_N10', '')
         return fileName
     
 def getFileExtension(path):
@@ -196,6 +196,35 @@ def writeOutFile(outFilePath, rows, cols, fidQty, fidX, fidY, compQty, comments,
         for i in range(compQty):
             out_file.writerow(['Comp', '', comments[i], footprints[i], designators[i], '', 
                             compX[i], compY[i], rotations[i], 'NO', 'Align'])
+            
+def correctCompOrder(designators, comments, footprints, compX, compY, rotations):
+    for i in range(len(compX)):
+        for j in range(len(compX)):
+            if compX[j] > compX[i]:
+                numDes = designators[i]
+                designators[i] = designators[j]
+                designators[j] = numDes
+
+                numCom = comments[i]
+                comments[i] = comments[j]
+                comments[j] = numCom
+
+                numFtp = footprints[i]
+                footprints[i] = footprints[j]
+                footprints[j] = numFtp
+
+                numX = compX[i]
+                compX[i] = compX[j]
+                compX[j] = numX
+
+                numY = compY[i]
+                compY[i] = compY[j]
+                compY[j] = numY
+
+                numRot = rotations[i]
+                rotations[i] = rotations[j]
+                rotations[j] = numRot
+
 
 def convertSingle10(path):
     dir = makeDir('resources')
@@ -225,6 +254,9 @@ def convertSingle10(path):
     topCompQty = 0
     bottomCompQty = 0
 
+    rows = 0
+    cols = 0
+
     topSingleDesignators = []
     bottomSingleDesignators = []
     topSingleComments = []
@@ -239,9 +271,6 @@ def convertSingle10(path):
     bottomSingleRotations = []
     topSingleCompQty = 0
     bottomSingleCompQty = 0
-
-    rows = 0
-    cols = 0
 
     topSingleFirstCompX = []
     topSingleFirstCompY = []
@@ -258,6 +287,7 @@ def convertSingle10(path):
         return 0
     
     correctFidOrder(topFidX, topFidY)
+
     topSingleCompQty = getSingleCompQty(topDesignators)
     appendSingleFirstCompXY(topCompQty, topSingleCompQty, topCompX, topCompY,
                             topSingleFirstCompX, topSingleFirstCompY)
@@ -287,6 +317,7 @@ def convertSingle10(path):
 
     if bottomCompQty > 0:
         correctFidOrder(bottomFidX, bottomFidY)
+
         bottomSingleCompQty = getSingleCompQty(bottomDesignators)
         appendSingleFirstCompXY(bottomCompQty, bottomSingleCompQty, bottomCompX, bottomCompY,
                             bottomSingleFirstCompX, bottomSingleFirstCompY)
@@ -306,16 +337,70 @@ def convertSingle10(path):
                         bottomSingleCompX, bottomCompX, bottomSingleCompY, bottomCompY, bottomSingleRotations, bottomRotations)
 
         bottomOutFilePath = dir + fileName + '_Bottom_N10' + fileExt
-        
+
         writeOutFile(bottomOutFilePath, rows, cols, bottomFidQty, bottomFidX, bottomFidY, bottomSingleCompQty, bottomSingleComments, bottomSingleFootprints,
                     bottomSingleDesignators, bottomSingleCompX, bottomSingleCompY, bottomSingleRotations)
 
-
-    if bottomCompQty > 0:
         return 2
-    elif bottomCompQty == 0:
-        return 1
+    
+    return 1
     
 
 def convertPanel10(path):
-    pass
+    dir = makeDir('resources')
+
+    fileName = changeFileName(path, False)
+    fileExt = getFileExtension(path)
+
+    topFidX = []
+    topFidY = []
+    bottomFidX = []
+    bottomFidY = []
+    topFidQty = 0
+    bottomFidQty = 0
+
+    topDesignators = []
+    bottomDesignators = []
+    topComments = []
+    bottomComments = []
+    topFootprints = []
+    bottomFootprints = []
+    topCompX = []
+    topCompY = []
+    bottomCompX = []
+    bottomCompY = []
+    topRotations = []
+    bottomRotations = []
+    topCompQty = 0
+    bottomCompQty = 0
+
+    topFidQty, bottomFidQty, topCompQty, bottomCompQty = getExcelData(path, topFidX, 
+                    topFidY, bottomFidX, bottomFidY, topDesignators, bottomDesignators, 
+                    topComments, bottomComments,topFootprints, bottomFootprints, topCompX, topCompY, 
+                    bottomCompX, bottomCompY, topRotations, bottomRotations)
+
+    if checkGetDataFailed(topCompQty):
+        return 0
+    
+    correctFidOrder(topFidX, topFidY)
+
+    correctCompOrder(topDesignators, topComments, topFootprints, topCompX, topCompY, topRotations)
+    
+    topOutFilePath = dir + fileName + '_Top_N10' + fileExt
+
+    writeOutFile(topOutFilePath, 1, 1, topFidQty, topFidX, topFidY, topCompQty, topComments, topFootprints,
+                topDesignators, topCompX, topCompY, topRotations)
+    
+    if bottomCompQty > 0:
+        correctFidOrder(bottomFidX, bottomFidY)
+
+        correctCompOrder(bottomDesignators, bottomComments, bottomFootprints, bottomCompX, bottomCompY, bottomRotations)
+
+        bottomOutFilePath = dir + fileName + '_Bottom_N10' + fileExt
+
+        writeOutFile(bottomOutFilePath, 1, 1, bottomFidQty, bottomFidX, bottomFidY, bottomCompQty, bottomComments, bottomFootprints,
+                    bottomDesignators, bottomCompX, bottomCompY, bottomRotations)
+        
+        return 2
+    
+    return 1    

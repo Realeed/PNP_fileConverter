@@ -229,63 +229,6 @@ def convertSingle10(path):
     appendSingleData(topPanelFirstLowestIndex, topSingleCompQty, topSingleDesignators, topDesignators,
                     topSingleComments, topComments, topSingleFootprints, topFootprints,
                     topSingleCompX, topCompX, topSingleCompY, topCompY, topSingleRotations, topRotations)
-        
-
-    if bottomCompQty > 0:
-        for i in range(len(bottomFidX)):
-            for j in range(len(bottomFidX)):
-                if bottomFidX[j] < bottomFidX[i]:
-                    numX = bottomFidX[i]
-                    bottomFidX[i] = bottomFidX[j]
-                    bottomFidX[j] = numX
-
-                    numY = bottomFidY[i]
-                    bottomFidY[i] = bottomFidY[j]
-                    bottomFidY[j] = numY
-
-        for i in range (1, len(bottomDesignators)):
-            if bottomDesignators[i] == bottomDesignators[0]:
-                bottomSingleCompQty = i
-                break
-
-        for i in range (0, bottomCompQty, bottomSingleCompQty):
-            bottomSingleFirstCompX.append(bottomCompX[i])
-            bottomSingleFirstCompY.append(bottomCompY[i])
-        
-        bottomSingleFirstCompXMinIndices = []
-        bottomSingleFirstCompYMinIndices = []
-
-        for i in range (len(bottomSingleFirstCompX)):
-            if bottomSingleFirstCompX[i] == min(bottomSingleFirstCompX):
-                bottomSingleFirstCompXMinIndices.append(i)
-
-        for i in range (len(bottomSingleFirstCompY)):
-            if bottomSingleFirstCompY[i] == min(bottomSingleFirstCompY):
-                bottomSingleFirstCompYMinIndices.append(i)       
-
-
-        bottomSingleFirstLowestIndex = 0
-
-        for i in range (len(bottomSingleFirstCompXMinIndices)):
-            if bottomSingleFirstCompXMinIndices[i] in bottomSingleFirstCompYMinIndices:
-                bottomSingleFirstLowestIndex = bottomSingleFirstCompXMinIndices[i]
-                break
-
-        bottomPanelFirstLowestIndex = 0
-
-        for i in range(len(bottomCompX)):
-            if bottomCompX[i] == bottomSingleFirstCompX[bottomSingleFirstLowestIndex] and bottomCompY[i] == bottomSingleFirstCompY[bottomSingleFirstLowestIndex]:
-                bottomPanelFirstLowestIndex = i
-                break
-
-        for i in range(bottomPanelFirstLowestIndex, bottomPanelFirstLowestIndex + bottomSingleCompQty):
-            bottomSingleDesignators.append(bottomDesignators[i])
-            bottomSingleComments.append(bottomComments[i])
-            bottomSingleFootprints.append(bottomFootprints[i])
-            bottomSingleCompX.append(bottomCompX[i])
-            bottomSingleCompY.append(bottomCompY[i])
-            bottomSingleRotations.append(bottomRotations[i])
-
     
     with open(dir + fileName + '_Top_N10' + fileExt, 'w', newline='', encoding='utf-8') as out_file:
         out_file = csv.writer(out_file)
@@ -339,8 +282,34 @@ def convertSingle10(path):
         for i in range(topSingleCompQty):
             out_file.writerow(['Comp', '', topSingleComments[i], topSingleFootprints[i], topSingleDesignators[i], '', 
                             topSingleCompX[i], topSingleCompY[i], topSingleRotations[i], 'NO', 'Align'])
-    
+        
+
     if bottomCompQty > 0:
+        correctFidOrder(bottomFidX, bottomFidY)
+
+        bottomSingleCompQty = getSingleCompQty(bottomDesignators)
+
+        appendSingleFirstCompXY(bottomCompQty, bottomSingleCompQty, bottomCompX, bottomCompY,
+                            bottomSingleFirstCompX, bottomSingleFirstCompY)
+        
+        bottomSingleFirstCompXMinIndices = []
+        bottomSingleFirstCompYMinIndices = []
+
+        appendMinIndices(bottomSingleFirstCompX, bottomSingleFirstCompY, bottomSingleFirstCompXMinIndices, bottomSingleFirstCompYMinIndices)       
+
+
+        bottomSingleFirstLowestIndex = 0
+
+        bottomSingleFirstLowestIndex = getSingleFirstLowestIndex(bottomSingleFirstCompXMinIndices, bottomSingleFirstCompYMinIndices)
+
+        bottomPanelFirstLowestIndex = 0
+
+        bottomPanelFirstLowestIndex = getPanelFirstLowestIndex(bottomCompX, bottomCompY, bottomSingleFirstCompX, bottomSingleFirstCompY, bottomSingleFirstLowestIndex)
+
+        appendSingleData(bottomPanelFirstLowestIndex, bottomSingleCompQty, bottomSingleDesignators, bottomDesignators,
+                        bottomSingleComments, bottomComments, bottomSingleFootprints, bottomFootprints,
+                        bottomSingleCompX, bottomCompX, bottomSingleCompY, bottomCompY, bottomSingleRotations, bottomRotations)
+
         with open(dir + fileName + '_Bottom_N10' + fileExt, 'w', newline='', encoding='utf-8') as out_file:
             out_file = csv.writer(out_file)
             out_file.writerow(['#Feeder', 'Feeder ID', 'Skip', 'Pos X', 'Pos Y', 'Angle', 

@@ -164,8 +164,8 @@ def writeOutFile(outFilePath, rows, cols, fidQty, fidX, fidY, compQty, comments,
                         'Feed PCB', 'Panelized Mark Point', 'PCB Width', 'PCB Length',
                         'Safe height', 'Manual Mark', 'Test', 'Detect X', 'Detect Y',
                         'Long PCB Input'])
-        out_file.writerow(['PCB', cols, rows, '', '', '', '', '', '', '0', '0', '', '1', '0', 
-                        '0', '', 'NO', '1', '', '', '', '4', '', '', '', '', ''])
+        out_file.writerow(['PCB', cols, rows, 325, 325, 325, 325, 325, 325, 0, 0, 1, 1, 0, 
+                        0, '', 'NO', 1, '', '', '', 4, '', '', 325, 325, ''])
         out_file.writerow([])
 
         out_file.writerow(['#Panel', 'Pos X', 'Pos Y', 'Offset X', 'Offset Y', 'Angle',
@@ -173,21 +173,21 @@ def writeOutFile(outFilePath, rows, cols, fidQty, fidX, fidY, compQty, comments,
         out_file.writerow([])
 
         out_file.writerow(['#Nozzle', 'NozzleID', 'Nozzle Type', 'Disabled'])
-        out_file.writerow(['Nozzle', '1', '', 'NO'])
-        out_file.writerow(['Nozzle', '2', '', 'NO'])
-        out_file.writerow(['Nozzle', '3', '', 'NO'])
-        out_file.writerow(['Nozzle', '4', '', 'NO'])
-        out_file.writerow(['Nozzle', '5', '', 'NO'])
-        out_file.writerow(['Nozzle', '6', '', 'NO'])
-        out_file.writerow(['Nozzle', '7', '', 'NO'])
-        out_file.writerow(['Nozzle', '8', '', 'NO'])
+        out_file.writerow(['Nozzle', 1, '', 'NO'])
+        out_file.writerow(['Nozzle', 2, '', 'NO'])
+        out_file.writerow(['Nozzle', 3, '', 'NO'])
+        out_file.writerow(['Nozzle', 4, '', 'NO'])
+        out_file.writerow(['Nozzle', 5, '', 'NO'])
+        out_file.writerow(['Nozzle', 6, '', 'NO'])
+        out_file.writerow(['Nozzle', 7, '', 'NO'])
+        out_file.writerow(['Nozzle', 8, '', 'NO'])
         out_file.writerow([])
 
         out_file.writerow(['#Mark', 'Pos X', 'Pos Y', 'Min Size', 'Max Size', 'Flash',
                         'Brightness', 'Searching Area', 'Circular Similarity',
                         'Nested Mode', 'Select Camera', 'Position'])
         for i in range(fidQty):
-            out_file.writerow(['Mark', fidX[i], fidY[i], '0.8', '1.2', 'Inner', '20', '4', '80',
+            out_file.writerow(['Mark', fidX[i], fidY[i], 0.8, 1.2, 'Inner', 20, 4, 80,
                         'Black Spot', 'Left Camera'])
         out_file.writerow([])
 

@@ -14,54 +14,30 @@ def getColumn(sheet, cellName):
         if cellName in column:
             return index
 
-def convertSingle10(path):
-    dir = 'resources\\'
+def makeDir(folderName):
+    dir = f'{folderName}\\'
     if not os.path.exists(dir):
         os.mkdir(dir)
+    return dir
 
-    fileName = Path(path).stem.replace('Pick Place for ', '').replace('Panel', 'Single')
+def changeFileName(path, single):
+    if single:
+       fileName = Path(path).stem.replace('Pick Place for ', '').replace('Panel', 'Single')
+       return fileName
+    else:
+        fileName = Path(path).stem.replace('Pick Place for ', '')
+        return fileName
+    
+def getFileExtension(path):
     fileExt = Path(path).suffix
+    return fileExt
 
-    topFidX = []
-    topFidY = []
-    bottomFidX = []
-    bottomFidY = []
-    topFidQty = 0
-    bottomFidQty = 0
-
-    topDesignators = []
-    bottomDesignators = []
-    topComments = []
-    bottomComments = []
-    topFootprints = []
-    bottomFootprints = []
-    topCompX = []
-    topCompY = []
-    bottomCompX = []
-    bottomCompY = []
-    topRotations = []
-    bottomRotations = []
-    topCompQty = 0
-    bottomCompQty = 0
-
-    topSingleDesignators = []
-    bottomSingleDesignators = []
-    topSingleComments = []
-    bottomSingleComments = []
-    topSingleFootprints = []
-    bottomSingleFootprints = []
-    topSingleCompX = []
-    topSingleCompY = []
-    bottomSingleCompX = []
-    bottomSingleCompY = []
-    topSingleRotations = []
-    bottomSingleRotations = []
-    topSingleCompQty = 0
-    bottomSingleCompQty = 0
-
-    rows = 0
-    cols = 0
-
+def getExcelData(path, topFidX, topFidY, bottomFidX, bottomFidY, topFidQty, bottomFidQty,
+                topDesignators, bottomDesignators, topComments, bottomComments,
+                topFootprints, bottomFootprints, topCompX, topCompY, 
+                bottomCompX, bottomCompY, topRotations, bottomRotations,
+                topCompQty, bottomCompQty):
+    
     with open(path, 'r') as csv_file:
         sheet = list(csv.reader(csv_file))
         maxRow = len(sheet)
@@ -107,71 +83,138 @@ def convertSingle10(path):
     topCompQty = len(topCompX)
     bottomCompQty = len(bottomCompX)
 
+def checkGetDataFailed(topCompQty):
+    if topCompQty == 0:
+        return 1
+    
+def correctFidOrder(fidX, fidY):
+    for i in range(len(fidX)):
+        for j in range(len(fidX)):
+            if fidX[j] < fidX[i]:
+                numX = fidX[i]
+                fidX[i] = fidX[j]
+                fidX[j] = numX
+
+                numY = fidY[i]
+                fidY[i] = fidY[j]
+                fidY[j] = numY
+
+def getSingleCompQty(designators):
+    for i in range (1, len(designators)):
+        if designators[i] == designators[0]:
+            singleCompQty = i
+            return singleCompQty
+
+def appendSingleFirstCompXY(compQty, singleCompQty, compX, compY, singleFirstCompX, singleFirstCompY):
+        for i in range (0, compQty, singleCompQty):
+            singleFirstCompX.append(compX[i])
+            singleFirstCompY.append(compY[i])
+
+def convertSingle10(path):
+    dir = makeDir('resources')
+
+    fileName = changeFileName(path, True)
+    fileExt = getFileExtension(path)
+
+    topFidX = []
+    topFidY = []
+    bottomFidX = []
+    bottomFidY = []
+    topFidQty = 0
+    bottomFidQty = 0
+
+    topDesignators = []
+    bottomDesignators = []
+    topComments = []
+    bottomComments = []
+    topFootprints = []
+    bottomFootprints = []
+    topCompX = []
+    topCompY = []
+    bottomCompX = []
+    bottomCompY = []
+    topRotations = []
+    bottomRotations = []
+    topCompQty = 0
+    bottomCompQty = 0
+
+    topSingleDesignators = []
+    bottomSingleDesignators = []
+    topSingleComments = []
+    bottomSingleComments = []
+    topSingleFootprints = []
+    bottomSingleFootprints = []
+    topSingleCompX = []
+    topSingleCompY = []
+    bottomSingleCompX = []
+    bottomSingleCompY = []
+    topSingleRotations = []
+    bottomSingleRotations = []
+    topSingleCompQty = 0
+    bottomSingleCompQty = 0
+
+    rows = 0
+    cols = 0
+
     topSingleFirstCompX = []
     topSingleFirstCompY = []
 
     bottomSingleFirstCompX = []
     bottomSingleFirstCompY = []
 
-    if (topCompQty == 0 and bottomCompQty == 0) or (topCompQty == 0 and bottomCompQty > 0):
+    getExcelData(path, topFidX, topFidY, bottomFidX, bottomFidY, topFidQty, bottomFidQty,
+                topDesignators, bottomDesignators, topComments, bottomComments,
+                topFootprints, bottomFootprints, topCompX, topCompY, 
+                bottomCompX, bottomCompY, topRotations, bottomRotations,
+                topCompQty, bottomCompQty)
+
+
+    if checkGetDataFailed(topCompQty):
         return 0
     
-    if topCompQty > 0:
-        for i in range(len(topFidX)):
-            for j in range(len(topFidX)):
-                if topFidX[j] < topFidX[i]:
-                    numX = topFidX[i]
-                    topFidX[i] = topFidX[j]
-                    topFidX[j] = numX
+    correctFidOrder(topFidX, topFidY)
 
-                    numY = topFidY[i]
-                    topFidY[i] = topFidY[j]
-                    topFidY[j] = numY
+    topSingleCompQty = getSingleCompQty(topDesignators)
 
-        for i in range (1, len(topDesignators)):
-            if topDesignators[i] == topDesignators[0]:
-                topSingleCompQty = i
-                break
+    appendSingleFirstCompXY(topCompQty, topSingleCompQty, topCompX, topCompY,
+                            topSingleFirstCompX, topSingleFirstCompY)
 
-        for i in range (0, topCompQty, topSingleCompQty):
-            topSingleFirstCompX.append(topCompX[i])
-            topSingleFirstCompY.append(topCompY[i])
-        
-        topSingleFirstCompXMinIndices = []
-        topSingleFirstCompYMinIndices = []
+    
+    topSingleFirstCompXMinIndices = []
+    topSingleFirstCompYMinIndices = []
 
-        for i in range (len(topSingleFirstCompX)):
-            if topSingleFirstCompX[i] == min(topSingleFirstCompX):
-                topSingleFirstCompXMinIndices.append(i)
+    for i in range (len(topSingleFirstCompX)):
+        if topSingleFirstCompX[i] == min(topSingleFirstCompX):
+            topSingleFirstCompXMinIndices.append(i)
 
-        for i in range (len(topSingleFirstCompY)):
-            if topSingleFirstCompY[i] == min(topSingleFirstCompY):
-                topSingleFirstCompYMinIndices.append(i)       
+    for i in range (len(topSingleFirstCompY)):
+        if topSingleFirstCompY[i] == min(topSingleFirstCompY):
+            topSingleFirstCompYMinIndices.append(i)       
 
-        rows = len(topSingleFirstCompXMinIndices)
-        cols = len(topSingleFirstCompYMinIndices)
+    rows = len(topSingleFirstCompXMinIndices)
+    cols = len(topSingleFirstCompYMinIndices)
 
-        topSingleFirstLowestIndex = 0
+    topSingleFirstLowestIndex = 0
 
-        for i in range (len(topSingleFirstCompXMinIndices)):
-            if topSingleFirstCompXMinIndices[i] in topSingleFirstCompYMinIndices:
-                topSingleFirstLowestIndex = topSingleFirstCompXMinIndices[i]
-                break
+    for i in range (len(topSingleFirstCompXMinIndices)):
+        if topSingleFirstCompXMinIndices[i] in topSingleFirstCompYMinIndices:
+            topSingleFirstLowestIndex = topSingleFirstCompXMinIndices[i]
+            break
 
-        topPanelFirstLowestIndex = 0
+    topPanelFirstLowestIndex = 0
 
-        for i in range(len(topCompX)):
-            if topCompX[i] == topSingleFirstCompX[topSingleFirstLowestIndex] and topCompY[i] == topSingleFirstCompY[topSingleFirstLowestIndex]:
-                topPanelFirstLowestIndex = i
-                break
+    for i in range(len(topCompX)):
+        if topCompX[i] == topSingleFirstCompX[topSingleFirstLowestIndex] and topCompY[i] == topSingleFirstCompY[topSingleFirstLowestIndex]:
+            topPanelFirstLowestIndex = i
+            break
 
-        for i in range(topPanelFirstLowestIndex, topPanelFirstLowestIndex + topSingleCompQty):
-            topSingleDesignators.append(topDesignators[i])
-            topSingleComments.append(topComments[i])
-            topSingleFootprints.append(topFootprints[i])
-            topSingleCompX.append(topCompX[i])
-            topSingleCompY.append(topCompY[i])
-            topSingleRotations.append(topRotations[i])
+    for i in range(topPanelFirstLowestIndex, topPanelFirstLowestIndex + topSingleCompQty):
+        topSingleDesignators.append(topDesignators[i])
+        topSingleComments.append(topComments[i])
+        topSingleFootprints.append(topFootprints[i])
+        topSingleCompX.append(topCompX[i])
+        topSingleCompY.append(topCompY[i])
+        topSingleRotations.append(topRotations[i])
         
 
     if bottomCompQty > 0:
@@ -342,3 +385,7 @@ def convertSingle10(path):
         return 2
     elif topCompQty > 0 and bottomCompQty == 0:
         return 1
+    
+
+def convertPanel10(path):
+    pass

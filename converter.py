@@ -203,12 +203,9 @@ def convertSingle10(path):
         return 0
     
     correctFidOrder(topFidX, topFidY)
-
     topSingleCompQty = getSingleCompQty(topDesignators)
-
     appendSingleFirstCompXY(topCompQty, topSingleCompQty, topCompX, topCompY,
                             topSingleFirstCompX, topSingleFirstCompY)
-
     
     topSingleFirstCompXMinIndices = []
     topSingleFirstCompYMinIndices = []
@@ -219,11 +216,8 @@ def convertSingle10(path):
     cols = len(topSingleFirstCompYMinIndices)
 
     topSingleFirstLowestIndex = 0
-
     topSingleFirstLowestIndex = getSingleFirstLowestIndex(topSingleFirstCompXMinIndices, topSingleFirstCompYMinIndices)
-
     topPanelFirstLowestIndex = 0
-
     topPanelFirstLowestIndex = getPanelFirstLowestIndex(topCompX, topCompY, topSingleFirstCompX, topSingleFirstCompY, topSingleFirstLowestIndex)
 
     appendSingleData(topPanelFirstLowestIndex, topSingleCompQty, topSingleDesignators, topDesignators,
@@ -363,9 +357,9 @@ def convertSingle10(path):
                 out_file.writerow(['Comp', '', bottomSingleComments[i], bottomSingleFootprints[i], bottomSingleDesignators[i], '', 
                                 bottomSingleCompX[i], bottomSingleCompY[i], bottomSingleRotations[i], 'NO', 'Align'])
 
-    if topCompQty > 0 and bottomCompQty > 0:
+    if bottomCompQty > 0:
         return 2
-    elif topCompQty > 0 and bottomCompQty == 0:
+    elif bottomCompQty == 0:
         return 1
     
 

@@ -226,10 +226,10 @@ def correctCompOrder(designators, comments, footprints, compX, compY, rotations)
                 rotations[j] = numRot
 
 
-def convertSingle10(path):
+def convertPanel10(path):
     dir = makeDir('resources')
 
-    fileName = changeFileName(path, True)
+    fileName = changeFileName(path, False)
     fileExt = getFileExtension(path)
 
     topFidX = []
@@ -346,10 +346,10 @@ def convertSingle10(path):
     return 1
     
 
-def convertPanel10(path):
+def convertSingle10(path):
     dir = makeDir('resources')
 
-    fileName = changeFileName(path, False)
+    fileName = changeFileName(path, True)
     fileExt = getFileExtension(path)
 
     topFidX = []

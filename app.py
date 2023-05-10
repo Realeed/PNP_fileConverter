@@ -24,12 +24,12 @@ def getExcel():
     if fileType == 'single10':
         layers = convertSingle10(fullPath)
         if layers == 2:
-            with ZipFile(dir + filename + '.zip', 'w') as zipObj:
+            with ZipFile(dir + filename.replace('Panel', 'Single') + '.zip', 'w') as zipObj:
                 zipObj.write(dir + filename.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single') + '_Top_N10' + extension, 
                             arcname = filename.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single') + '_Top_N10' + extension)
                 zipObj.write(dir + filename.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single') + '_Bottom_N10' + extension, 
                             arcname = filename.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single') + '_Bottom_N10' + extension)
-            return send_file(dir + filename + '.zip')
+            return send_file(dir + filename.replace('Panel', 'Single') + '.zip')
         elif layers == 1:
             return send_file(dir + filename.replace('Pick Place for ', '').replace('_N10', '').replace('Panel', 'Single') + '_Top_N10' + extension)
     elif fileType == 'panel10':

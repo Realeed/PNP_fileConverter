@@ -14,7 +14,6 @@ def main():
 def getExcel():
     dir = 'resources\\'
     fileType = request.form.get('filetype')
-    
     excel = request.files.get('excelInp')
 
     fullPath = dir + excel.filename
